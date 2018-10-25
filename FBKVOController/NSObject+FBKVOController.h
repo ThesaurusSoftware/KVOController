@@ -34,6 +34,20 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion This makes it convenient to simply create and forget a FBKVOController.
  Use this version when a strong reference between controller and observed object would create a retain cycle.
  When not retaining observed objects, special care must be taken to remove observation info prior to deallocation of the observed object.
+ NOTE:
+ Observing self like so
+ 
+    [self.KVOControllerNonRetaining observe:self ...];
+ 
+ and subsequently unobserving like so
+ 
+ - (void)dealloc
+ {
+    [self.KVOControllerNonRetaining unobserve:self];
+ }
+ 
+ will not effectively remove the self observation. This will lead to crashes on some platforms (eg: 10.12) but perhaps not on others. Yuk.
+ 
  */
 @property (nonatomic, strong) FBKVOController *KVOControllerNonRetaining;
 
